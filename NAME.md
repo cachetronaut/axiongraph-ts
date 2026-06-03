@@ -5,19 +5,22 @@
 > Invisible events. Replayable graphs.
 
 The working name during design was `graph-events`. The chosen, public-facing name is
-**AxionGraph**, published under the `@axiongraph` npm scope.
+**AxionGraph**, published as a single **unscoped** `axiongraph` npm package (no org/scope).
 
-## Packages
+## Package and entry points
 
-- `@axiongraph/core` — event model, deterministic reducer, canonicalizer, vocabulary
-  machinery, and the `GraphStore` port.
-- `@axiongraph/store-local` — zero-service reference adapters (`InMemoryStore`,
-  `SqliteStore`).
+One published package, `axiongraph`, with subpath exports — the PyPI-extras model. Optional
+backends are declared as optional peer dependencies (install only what a feature needs).
 
-Planned:
+- `axiongraph` — event model, deterministic reducer, canonicalizer, vocabulary machinery,
+  and the `GraphStore` port.
+- `axiongraph/store-local` — zero-service reference adapters (`InMemoryStore`, `SqliteStore`).
 
-- `axiongraph` — Python mirror (PyPI, unscoped).
-- `@axiongraph/store-convex`, `@axiongraph/store-neo4j`, `@axiongraph/store-postgres`.
+Internally the repo is a pnpm workspace of `private` packages (`@axiongraph/core`,
+`@axiongraph/store-local`) bundled by `tsup` into the one published package.
+
+Planned subpaths: `axiongraph/store-convex` (peer: `convex`), `axiongraph/store-neo4j`
+(peer: `neo4j-driver`); and `axiongraph` on PyPI (Python mirror).
 
 ## Notes
 

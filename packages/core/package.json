@@ -1,58 +1,20 @@
 {
   "name": "@axiongraph/core",
-  "version": "0.0.2",
-  "description": "Core contracts for AxionGraph: the append-only event model, deterministic reducer, canonicalizer, and vocabulary machinery.",
-  "keywords": [
-    "axiongraph",
-    "graph-events",
-    "event-sourcing",
-    "reducer",
-    "execution-graph",
-    "provenance",
-    "agents",
-    "observability",
-    "typescript"
-  ],
+  "version": "0.0.0",
+  "private": true,
+  "description": "Internal: core contracts for AxionGraph (event model, reducer, canonicalizer, vocabulary, GraphStore port). Published as part of the `axiongraph` package.",
   "type": "module",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/cachetronaut/axiongraph-ts.git",
-    "directory": "packages/core"
-  },
-  "homepage": "https://github.com/cachetronaut/axiongraph-ts#readme",
-  "bugs": {
-    "url": "https://github.com/cachetronaut/axiongraph-ts/issues"
-  },
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "exports": {
     ".": "./src/index.ts"
   },
-  "files": [
-    "dist",
-    "README.md"
-  ],
-  "publishConfig": {
-    "access": "public",
-    "main": "./dist/index.js",
-    "types": "./dist/index.d.ts",
-    "exports": {
-      ".": {
-        "types": "./dist/index.d.ts",
-        "import": "./dist/index.js"
-      }
-    }
-  },
   "scripts": {
-    "build": "tsup src/index.ts --format esm --dts --clean --out-dir dist",
-    "prepublishOnly": "pnpm run build",
     "lint": "biome lint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run"
   },
   "devDependencies": {
-    "tsup": "^8.3.5",
     "vitest": "^2.1.8"
   }
 }

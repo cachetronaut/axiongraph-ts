@@ -11,7 +11,7 @@ Neo4j, realtime transports, auth, policy, or budgets — it is a small, byte-sta
 parity-testable primitive that ships as MIT OSS.
 
 ```ts
-import { reduceAll } from "@axiongraph/core";
+import { reduceAll } from "axiongraph";
 
 const events = [
   { id: "evt_01", runId: "run_01", seq: 1, ts: "2026-06-02T12:00:00.000Z",
@@ -46,26 +46,32 @@ AxionGraph keeps that layer small and portable.
 - Storage is a port (`GraphStore`); rendering and realtime transport are consumer concerns.
 - TypeScript first, with a Python mirror kept honest by shared parity fixtures.
 
-## Packages
+## One package, opt-in extras
 
-| Package | Description |
-| --- | --- |
-| [`@axiongraph/core`](packages/core) | Event model, deterministic reducer, canonicalizer, vocabulary machinery, and the `GraphStore` port. |
-| [`@axiongraph/store-local`](packages/store-local) | Zero-service reference adapters: an in-memory store and a `node:sqlite`-backed durable store. |
+AxionGraph ships as a single `axiongraph` package with subpath entry points — the npm
+equivalent of Python extras. Heavy backends are declared as optional peer dependencies, so
+you install only what a feature needs.
 
-Planned: `axiongraph` (Python, PyPI), `@axiongraph/store-convex`, `@axiongraph/store-neo4j`.
+| Entry point | Description | Extra to install |
+| --- | --- | --- |
+| `axiongraph` | Event model, deterministic reducer, canonicalizer, vocabulary machinery, and the `GraphStore` port. | — |
+| `axiongraph/store-local` | Zero-service reference adapters: an in-memory store and a `node:sqlite`-backed durable store. | — (`node:sqlite` is built in) |
+
+Planned subpaths: `axiongraph/store-convex` (peer: `convex`), `axiongraph/store-neo4j`
+(peer: `neo4j-driver`), and a Python mirror published as `axiongraph` on PyPI.
 
 ## Install
 
 ```sh
-pnpm add @axiongraph/core
-pnpm add @axiongraph/store-local   # optional: reference stores
+pnpm add axiongraph
+# later, opting into a backend extra, e.g.:
+# pnpm add axiongraph convex
 ```
 
 ## Storing and replaying events
 
 ```ts
-import { SqliteStore } from "@axiongraph/store-local";
+import { SqliteStore } from "axiongraph/store-local";
 
 const store = new SqliteStore("./run.db"); // or new InMemoryStore()
 await store.append(events);                // idempotent on (runId, seq)
@@ -82,8 +88,11 @@ Node 24 and pnpm 9. The repo is a pnpm workspace.
 ```sh
 pnpm install
 pnpm verify   # biome check + tsc typecheck + Vitest
-pnpm build    # emit dist/ for each publishable package
+pnpm build    # bundle the internal packages into the single axiongraph dist
 ```
+
+The repo is an internal pnpm workspace (`packages/core`, `packages/store-local`); `tsup`
+bundles those into the one published `axiongraph` package with `.` and `/store-local` exports.
 
 ## Status
 

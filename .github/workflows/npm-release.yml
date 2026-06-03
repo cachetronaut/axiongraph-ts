@@ -56,47 +56,38 @@ jobs:
             echo "value=patch" >> "$GITHUB_OUTPUT"
           fi
 
-      # Both published packages share one version. Bump @axiongraph/core, then pin
-      # @axiongraph/store-local to the same version so the tag and the two packages agree.
       - name: Bump version
         id: version
         run: |
-          VERSION="$(cd packages/core && npm version "${{ steps.bump.outputs.value }}" --no-git-tag-version | sed 's/^v//')"
-          (cd packages/store-local && npm version "${VERSION}" --no-git-tag-version --allow-same-version)
-          pnpm install --lockfile-only
+          npm version "${{ steps.bump.outputs.value }}" --no-git-tag-version
+          VERSION="$(node -p "require('./package.json').version")"
           if git rev-parse "v${VERSION}" >/dev/null 2>&1; then
             echo "Tag v${VERSION} already exists." >&2
             exit 1
           fi
-          for pkg in @axiongraph/core @axiongraph/store-local; do
-            if npm view "${pkg}@${VERSION}" version >/dev/null 2>&1; then
-              echo "${pkg}@${VERSION} already exists on npm." >&2
-              exit 1
-            fi
-          done
+          if npm view "axiongraph@${VERSION}" version >/dev/null 2>&1; then
+            echo "axiongraph@${VERSION} already exists on npm." >&2
+            exit 1
+          fi
           echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
           echo "tag=v${VERSION}" >> "$GITHUB_OUTPUT"
 
       - name: Build
         run: |
           pnpm build
-          pnpm -r publish --no-git-checks --dry-run
+          npm pack --dry-run
 
       - name: Commit version and tag
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add packages/core/package.json packages/store-local/package.json pnpm-lock.yaml
+          git add package.json
           git commit -m "chore: release ${{ steps.version.outputs.tag }}"
           git tag -a "${{ steps.version.outputs.tag }}" -m "Release ${{ steps.version.outputs.tag }}"
           git push origin HEAD:main "${{ steps.version.outputs.tag }}"
 
-      # Multi-package + workspace:* deps need pnpm's workspace-aware publish (it rewrites
-      # workspace:* to the concrete version and applies publishConfig). Unlike houndex's
-      # single-package keyless publish, this uses an NPM_TOKEN secret; --provenance still
-      # signs via the id-token. Configure the NPM_TOKEN secret and grant the token publish
-      # access to @axiongraph/core and @axiongraph/store-local.
+      # Single unscoped package → npm keyless Trusted Publishing (no token). Configure the
+      # repo + this workflow as a trusted publisher for `axiongraph` on npmjs.com, and add
+      # `--provenance` once the GitHub repo is public.
       - name: Publish to npm
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: pnpm -r publish --access public --no-git-checks --provenance
+        run: npm publish

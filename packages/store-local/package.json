@@ -1,50 +1,15 @@
 {
   "name": "@axiongraph/store-local",
-  "version": "0.0.2",
-  "description": "Zero-service reference GraphStore adapters for AxionGraph: an in-memory store and a node:sqlite-backed durable store.",
-  "keywords": [
-    "axiongraph",
-    "graph-events",
-    "graph-store",
-    "sqlite",
-    "in-memory",
-    "event-store",
-    "typescript"
-  ],
+  "version": "0.0.0",
+  "private": true,
+  "description": "Internal: zero-service GraphStore adapters (in-memory + node:sqlite). Published as the `axiongraph/store-local` subpath of the `axiongraph` package.",
   "type": "module",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/cachetronaut/axiongraph-ts.git",
-    "directory": "packages/store-local"
-  },
-  "homepage": "https://github.com/cachetronaut/axiongraph-ts#readme",
-  "bugs": {
-    "url": "https://github.com/cachetronaut/axiongraph-ts/issues"
-  },
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "exports": {
     ".": "./src/index.ts"
   },
-  "files": [
-    "dist",
-    "README.md"
-  ],
-  "publishConfig": {
-    "access": "public",
-    "main": "./dist/index.js",
-    "types": "./dist/index.d.ts",
-    "exports": {
-      ".": {
-        "types": "./dist/index.d.ts",
-        "import": "./dist/index.js"
-      }
-    }
-  },
   "scripts": {
-    "build": "tsup src/index.ts --format esm --dts --clean --out-dir dist",
-    "prepublishOnly": "pnpm run build",
     "lint": "biome lint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run"
@@ -53,7 +18,6 @@
     "@axiongraph/core": "workspace:*"
   },
   "devDependencies": {
-    "tsup": "^8.3.5",
     "vitest": "^2.1.8"
   }
 }

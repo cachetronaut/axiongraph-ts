@@ -1,21 +1,102 @@
 {
   "name": "axiongraph",
-  "version": "0.0.0",
-  "private": true,
-  "description": "AxionGraph — append-only execution-graph event model and deterministic reducer. Provider-agnostic; storage is a port.",
+  "version": "0.0.1",
+  "description": "Invisible events. Replayable graphs. AxionGraph is an append-only execution-graph event model and deterministic reducer — provider-agnostic, storage is a port.",
+  "keywords": [
+    "axiongraph",
+    "graph-events",
+    "graph",
+    "graph-state",
+    "execution-graph",
+    "dag",
+    "directed-graph",
+    "event-sourcing",
+    "event-store",
+    "event-log",
+    "event-stream",
+    "append-only",
+    "events",
+    "reducer",
+    "fold",
+    "deterministic",
+    "replay",
+    "replayable",
+    "immutable",
+    "snapshot",
+    "state-management",
+    "provenance",
+    "lineage",
+    "audit",
+    "audit-trail",
+    "traceability",
+    "observability",
+    "tracing",
+    "trace",
+    "telemetry",
+    "agents",
+    "ai-agents",
+    "agentic",
+    "multi-agent",
+    "agent-orchestration",
+    "orchestration",
+    "workflow",
+    "workflows",
+    "pipeline",
+    "tool-use",
+    "tool-calls",
+    "llm",
+    "ai",
+    "genai",
+    "langgraph",
+    "graph-store",
+    "sqlite",
+    "node-sqlite",
+    "in-memory",
+    "typescript",
+    "esm"
+  ],
   "type": "module",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cachetronaut/axiongraph-ts.git"
+  },
+  "homepage": "https://github.com/cachetronaut/axiongraph-ts#readme",
+  "bugs": {
+    "url": "https://github.com/cachetronaut/axiongraph-ts/issues"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./store-local": {
+      "types": "./dist/store-local.d.ts",
+      "import": "./dist/store-local.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "engines": {
     "node": ">=24.0.0",
     "pnpm": ">=9.0.0"
   },
   "packageManager": "pnpm@9.12.0",
   "scripts": {
+    "build": "tsup",
+    "prepack": "pnpm build",
+    "prepublishOnly": "pnpm verify && pnpm build",
     "check": "biome check .",
     "check:fix": "biome check --write .",
     "typecheck": "pnpm -r typecheck",
     "test": "pnpm -r test",
-    "build": "pnpm -r build",
     "verify": "pnpm check && pnpm typecheck && pnpm test"
   },
   "pnpm": {

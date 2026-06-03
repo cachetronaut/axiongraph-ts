@@ -27,7 +27,7 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm test
       - run: pnpm build
-      - run: pnpm -r publish --no-git-checks --dry-run
+      - run: npm pack --dry-run
 
   gitleaks:
     runs-on: ubuntu-latest
