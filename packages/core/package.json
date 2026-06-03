@@ -1,0 +1,22 @@
+{
+  "name": "@graph-events/core",
+  "version": "0.0.0",
+  "description": "Core contracts for graph-events: the append-only event model, deterministic reducer, canonicalizer, and vocabulary machinery.",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "lint": "biome lint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "vitest": "^2.1.8"
+  }
+}
