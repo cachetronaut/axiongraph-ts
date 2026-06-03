@@ -21,6 +21,6 @@ Planned:
 
 ## Notes
 
-- Repository directory remains `graph-events-ts/` (matches the design spec's layout
-  section); the published identity is AxionGraph.
+- Repository directory is `axiongraph-ts/` (the `-ts` suffix distinguishes it from the
+  Python mirror `axiongraph-py`); renamed from the spec's working name `graph-events-ts`.
 - This file is the source of truth for the name, per the spec's naming convention.
