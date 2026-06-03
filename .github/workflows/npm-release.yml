@@ -46,7 +46,9 @@ jobs:
       # Keyless OIDC Trusted Publishing requires npm >= 11.5.1; the runner's bundled
       # npm can lag, so pin a known-good newer npm.
       - name: Upgrade npm for Trusted Publishing
-        run: npm install -g npm@latest
+        run: |
+          npm install -g npm@latest
+          echo "node: $(node -v) | npm: $(npm -v) | which: $(which npm)"
 
       - name: Install
         run: pnpm install --frozen-lockfile
