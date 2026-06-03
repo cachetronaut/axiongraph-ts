@@ -1,6 +1,6 @@
 {
   "name": "axiongraph",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Invisible events. Replayable graphs. AxionGraph is an append-only execution-graph event model and deterministic reducer — provider-agnostic, storage is a port.",
   "keywords": [
     "axiongraph",
