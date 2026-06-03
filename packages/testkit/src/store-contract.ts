@@ -1,8 +1,8 @@
 import { canonicalize, type GraphEvent, type GraphStore, reduceAll } from '@axiongraph/core';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
-/** A store the suite may also be able to close (sqlite); the port itself has no `close`. */
-type ClosableStore = GraphStore & { close?: () => void };
+/** A store the suite may also be able to close (sqlite/postgres); the port itself has no `close`. */
+type ClosableStore = GraphStore & { close?: () => void | Promise<void> };
 
 const RUN = 'run_contract';
 const OTHER = 'run_other';
@@ -38,8 +38,8 @@ export function runStoreContract(label: string, makeStore: () => ClosableStore):
       store = makeStore();
     });
 
-    afterEach(() => {
-      store.close?.();
+    afterEach(async () => {
+      await store.close?.();
     });
 
     it('returns an empty state for a run with no events', async () => {

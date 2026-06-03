@@ -1,8 +1,8 @@
 {
-  "name": "@axiongraph/store-local",
+  "name": "@axiongraph/store-postgres",
   "version": "0.0.0",
   "private": true,
-  "description": "Internal: zero-service GraphStore adapters (in-memory + node:sqlite). Published as the `axiongraph/store-local` subpath of the `axiongraph` package.",
+  "description": "Internal: a durable GraphStore adapter backed by Postgres (pg). Published as the `axiongraph/store-postgres` subpath of the `axiongraph` package; `pg` is an optional peer dependency.",
   "type": "module",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
@@ -17,8 +17,13 @@
   "dependencies": {
     "@axiongraph/core": "workspace:*"
   },
+  "peerDependencies": {
+    "pg": ">=8"
+  },
   "devDependencies": {
     "@axiongraph/testkit": "workspace:*",
+    "@types/pg": "^8.11.10",
+    "pg": "^8.13.1",
     "vitest": "^2.1.8"
   }
 }

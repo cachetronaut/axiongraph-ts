@@ -7,7 +7,9 @@
     "baseUrl": ".",
     "paths": {
       "@axiongraph/core": ["packages/core/src/index.ts"],
-      "@axiongraph/store-local": ["packages/store-local/src/index.ts"]
+      "@axiongraph/store-local": ["packages/store-local/src/index.ts"],
+      "@axiongraph/store-postgres": ["packages/store-postgres/src/index.ts"],
+      "@axiongraph/testkit": ["packages/testkit/src/index.ts"]
     },
     "strict": true,
     "noUncheckedIndexedAccess": true,

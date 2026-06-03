@@ -60,9 +60,10 @@ you install only what a feature needs.
 | --- | --- | --- |
 | `axiongraph` | Event model, deterministic reducer, canonicalizer, vocabulary machinery, and the `GraphStore` port. | — |
 | `axiongraph/store-local` | Zero-service reference adapters: an in-memory store and a `node:sqlite`-backed durable store. | — (`node:sqlite` is built in) |
+| `axiongraph/store-postgres` | Durable `PostgresStore` backed by a `pg` pool: `jsonb` event log keyed on `(runId, seq)`, idempotent appends, live-fold snapshots. | `pg` |
 
 Planned subpaths: `axiongraph/store-convex` (peer: `convex`), `axiongraph/store-neo4j`
-(peer: `neo4j-driver`), and a Python mirror published as `axiongraph` on PyPI.
+(peer: `neo4j-driver`). A Python mirror ships the same adapters as PyPI extras.
 
 ## Install
 
@@ -95,8 +96,12 @@ pnpm verify   # biome check + tsc typecheck + Vitest
 pnpm build    # bundle the internal packages into the single axiongraph dist
 ```
 
-The repo is an internal pnpm workspace (`packages/core`, `packages/store-local`); `tsup`
-bundles those into the one published `axiongraph` package with `.` and `/store-local` exports.
+The repo is an internal pnpm workspace (`packages/core`, `packages/store-local`,
+`packages/store-postgres`, plus a dev-only `packages/testkit` shared contract suite); `tsup`
+bundles the publishable ones into the single `axiongraph` dist with subpath exports.
+
+The Postgres contract suite is gated on `AXIONGRAPH_TEST_POSTGRES_URL`; it is skipped locally
+unless set, and CI runs it against a `postgres:16` service.
 
 ## Status
 

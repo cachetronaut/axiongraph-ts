@@ -76,6 +76,10 @@
       "types": "./dist/store-local.d.ts",
       "import": "./dist/store-local.js"
     },
+    "./store-postgres": {
+      "types": "./dist/store-postgres.d.ts",
+      "import": "./dist/store-postgres.js"
+    },
     "./package.json": "./package.json"
   },
   "files": [
@@ -109,6 +113,14 @@
         "current",
         "arm64"
       ]
+    }
+  },
+  "peerDependencies": {
+    "pg": ">=8"
+  },
+  "peerDependenciesMeta": {
+    "pg": {
+      "optional": true
     }
   },
   "devDependencies": {

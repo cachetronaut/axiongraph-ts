@@ -8,6 +8,7 @@ export default defineConfig({
   entry: {
     index: 'packages/core/src/index.ts',
     'store-local': 'packages/store-local/src/index.ts',
+    'store-postgres': 'packages/store-postgres/src/index.ts',
   },
   format: 'esm',
   dts: true,

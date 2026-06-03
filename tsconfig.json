@@ -3,5 +3,9 @@
   "compilerOptions": {
     "noEmit": true
   },
-  "include": ["packages/core/src/**/*.ts", "packages/store-local/src/**/*.ts"]
+  "include": [
+    "packages/core/src/**/*.ts",
+    "packages/store-local/src/**/*.ts",
+    "packages/store-postgres/src/**/*.ts"
+  ]
 }

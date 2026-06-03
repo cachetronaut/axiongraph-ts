@@ -2,9 +2,9 @@ import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import type { GraphEvent } from '@axiongraph/core';
+import { runStoreContract } from '@axiongraph/testkit';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { SqliteStore } from '../src/sqlite';
-import { runStoreContract } from './store-contract';
 
 // Each case gets a fresh in-memory database; the suite closes it in afterEach.
 runStoreContract('SqliteStore (:memory:)', () => new SqliteStore());
