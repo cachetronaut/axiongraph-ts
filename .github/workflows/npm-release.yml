@@ -41,6 +41,11 @@ jobs:
           node-version: 24
           registry-url: "https://registry.npmjs.org"
 
+      # Keyless OIDC Trusted Publishing requires npm >= 11.5.1; the runner's bundled
+      # npm can lag, so pin a known-good newer npm.
+      - name: Upgrade npm for Trusted Publishing
+        run: npm install -g npm@latest
+
       - name: Install
         run: pnpm install --frozen-lockfile
 
@@ -77,6 +82,12 @@ jobs:
           pnpm build
           npm pack --dry-run
 
+      # Single unscoped package → npm keyless Trusted Publishing (no token). Configure the
+      # repo + this workflow as a trusted publisher for `axiongraph` on npmjs.com.
+      # Publish BEFORE pushing the release commit/tag so a failed publish leaves no residue.
+      - name: Publish to npm
+        run: npm publish --provenance
+
       - name: Commit version and tag
         run: |
           git config user.name "github-actions[bot]"
@@ -85,9 +96,3 @@ jobs:
           git commit -m "chore: release ${{ steps.version.outputs.tag }}"
           git tag -a "${{ steps.version.outputs.tag }}" -m "Release ${{ steps.version.outputs.tag }}"
           git push origin HEAD:main "${{ steps.version.outputs.tag }}"
-
-      # Single unscoped package → npm keyless Trusted Publishing (no token). Configure the
-      # repo + this workflow as a trusted publisher for `axiongraph` on npmjs.com, and add
-      # `--provenance` once the GitHub repo is public.
-      - name: Publish to npm
-        run: npm publish
