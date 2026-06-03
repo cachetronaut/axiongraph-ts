@@ -90,7 +90,7 @@ jobs:
       # repo + this workflow as a trusted publisher for `axiongraph` on npmjs.com.
       # Publish BEFORE pushing the release commit/tag so a failed publish leaves no residue.
       - name: Publish to npm
-        run: npm publish --provenance
+        run: npm publish --provenance --loglevel verbose
 
       - name: Commit version and tag
         run: |
