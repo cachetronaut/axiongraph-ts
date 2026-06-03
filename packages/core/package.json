@@ -1,6 +1,6 @@
 {
   "name": "@axiongraph/core",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Core contracts for AxionGraph: the append-only event model, deterministic reducer, canonicalizer, and vocabulary machinery.",
   "keywords": [
     "axiongraph",

@@ -1,6 +1,6 @@
 {
   "name": "@axiongraph/store-local",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Zero-service reference GraphStore adapters for AxionGraph: an in-memory store and a node:sqlite-backed durable store.",
   "keywords": [
     "axiongraph",
