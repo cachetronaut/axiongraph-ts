@@ -1,4 +1,4 @@
-import { type GraphEvent, type GraphState, type GraphStore, reduceAll } from '@graph-events/core';
+import { type GraphEvent, type GraphState, type GraphStore, reduceAll } from '@axiongraph/core';
 
 /**
  * A `Map`-backed {@link GraphStore} for tests and ephemeral runs. Append-only and

@@ -1,7 +1,7 @@
 {
-  "name": "@graph-events/core",
+  "name": "@axiongraph/core",
   "version": "0.0.0",
-  "description": "Core contracts for graph-events: the append-only event model, deterministic reducer, canonicalizer, and vocabulary machinery.",
+  "description": "Core contracts for AxionGraph: the append-only event model, deterministic reducer, canonicalizer, and vocabulary machinery.",
   "type": "module",
   "main": "./src/index.ts",
   "types": "./src/index.ts",

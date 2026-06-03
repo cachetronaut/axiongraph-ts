@@ -6,8 +6,8 @@
     "moduleResolution": "Bundler",
     "baseUrl": ".",
     "paths": {
-      "@graph-events/core": ["packages/core/src/index.ts"],
-      "@graph-events/store-local": ["packages/store-local/src/index.ts"]
+      "@axiongraph/core": ["packages/core/src/index.ts"],
+      "@axiongraph/store-local": ["packages/store-local/src/index.ts"]
     },
     "strict": true,
     "noUncheckedIndexedAccess": true,

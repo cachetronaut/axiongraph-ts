@@ -1,7 +1,7 @@
 import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import type { GraphEvent } from '@graph-events/core';
+import type { GraphEvent } from '@axiongraph/core';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { SqliteStore } from '../src/sqlite';
 import { runStoreContract } from './store-contract';
@@ -14,7 +14,7 @@ describe('SqliteStore durability', () => {
   let dbPath: string;
 
   beforeEach(() => {
-    dir = mkdtempSync(join(tmpdir(), 'graph-events-sqlite-'));
+    dir = mkdtempSync(join(tmpdir(), 'axiongraph-sqlite-'));
     dbPath = join(dir, 'events.db');
   });
 

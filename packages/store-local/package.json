@@ -1,5 +1,5 @@
 {
-  "name": "@graph-events/store-local",
+  "name": "@axiongraph/store-local",
   "version": "0.0.0",
   "description": "Zero-service reference GraphStore adapters: an in-memory store and a node:sqlite-backed durable store.",
   "type": "module",
@@ -17,7 +17,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@graph-events/core": "workspace:*"
+    "@axiongraph/core": "workspace:*"
   },
   "devDependencies": {
     "vitest": "^2.1.8"

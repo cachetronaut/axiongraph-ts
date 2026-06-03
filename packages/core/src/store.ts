@@ -2,7 +2,7 @@ import type { GraphEvent, GraphState } from './types';
 
 /**
  * The seam between the event model and any backend (spec D4). Core defines the port;
- * adapters (`@graph-events/store-local`, and later convex/neo4j/postgres) implement it.
+ * adapters (`@axiongraph/store-local`, and later convex/neo4j/postgres) implement it.
  *
  * Writes are append-only. `append` is idempotent on `(runId, seq)` so retried emitters
  * and at-least-once delivery never corrupt the log (ties back to spec D3).

@@ -18,6 +18,9 @@ coverage/
 .env.*
 !.env.example
 
+# Local npm/pnpm config (may hold registry tokens); never commit to a public repo.
+.npmrc
+
 # Editor / IDE
 .vscode/
 .idea/

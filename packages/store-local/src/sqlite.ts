@@ -1,5 +1,5 @@
 import { createRequire } from 'node:module';
-import { type GraphEvent, type GraphState, type GraphStore, reduceAll } from '@graph-events/core';
+import { type GraphEvent, type GraphState, type GraphStore, reduceAll } from '@axiongraph/core';
 
 // `node:sqlite` is a Node builtin, but bundlers/test runners (Vite) do not yet recognize it
 // and try to resolve a bare `sqlite` module. Loading it through a native `require` keeps the

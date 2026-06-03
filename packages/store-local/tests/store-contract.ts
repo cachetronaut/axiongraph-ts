@@ -1,4 +1,4 @@
-import { canonicalize, type GraphEvent, type GraphStore, reduceAll } from '@graph-events/core';
+import { canonicalize, type GraphEvent, type GraphStore, reduceAll } from '@axiongraph/core';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 /** A store the suite may also be able to close (sqlite); the port itself has no `close`. */

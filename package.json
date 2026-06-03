@@ -1,8 +1,8 @@
 {
-  "name": "graph-events",
+  "name": "axiongraph",
   "version": "0.0.0",
   "private": true,
-  "description": "Append-only execution-graph event model and deterministic reducer. Provider-agnostic; storage is a port.",
+  "description": "AxionGraph — append-only execution-graph event model and deterministic reducer. Provider-agnostic; storage is a port.",
   "type": "module",
   "license": "MIT",
   "engines": {
@@ -16,6 +16,18 @@
     "typecheck": "pnpm -r typecheck",
     "test": "pnpm -r test",
     "verify": "pnpm check && pnpm typecheck && pnpm test"
+  },
+  "pnpm": {
+    "supportedArchitectures": {
+      "os": [
+        "current",
+        "darwin"
+      ],
+      "cpu": [
+        "current",
+        "arm64"
+      ]
+    }
   },
   "devDependencies": {
     "@biomejs/biome": "2.0.6",
