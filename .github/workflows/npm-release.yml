@@ -46,9 +46,7 @@ jobs:
       # Keyless OIDC Trusted Publishing requires npm >= 11.5.1; the runner's bundled
       # npm can lag, so pin a known-good newer npm.
       - name: Upgrade npm for Trusted Publishing
-        run: |
-          npm install -g npm@latest
-          echo "node: $(node -v) | npm: $(npm -v) | which: $(which npm)"
+        run: npm install -g npm@latest
 
       - name: Install
         run: pnpm install --frozen-lockfile
@@ -90,7 +88,7 @@ jobs:
       # repo + this workflow as a trusted publisher for `axiongraph` on npmjs.com.
       # Publish BEFORE pushing the release commit/tag so a failed publish leaves no residue.
       - name: Publish to npm
-        run: npm publish --provenance --loglevel verbose
+        run: npm publish --provenance
 
       - name: Commit version and tag
         run: |
