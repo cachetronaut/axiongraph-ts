@@ -36,10 +36,12 @@ jobs:
         with:
           version: 9.12.0
 
+      # Note: do NOT set `registry-url` here. It makes setup-node write an .npmrc with a
+      # `_authToken=${NODE_AUTH_TOKEN}` line; with no token that empty credential overrides
+      # OIDC and the publish 404s. Omitting it lets npm use Trusted Publishing (OIDC).
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-          registry-url: "https://registry.npmjs.org"
 
       # Keyless OIDC Trusted Publishing requires npm >= 11.5.1; the runner's bundled
       # npm can lag, so pin a known-good newer npm.
