@@ -80,6 +80,15 @@
       "types": "./dist/store-postgres.d.ts",
       "import": "./dist/store-postgres.js"
     },
+    "./store-convex": {
+      "types": "./dist/store-convex.d.ts",
+      "import": "./dist/store-convex.js"
+    },
+    "./store-convex/server": {
+      "types": "./dist/store-convex/server.d.ts",
+      "import": "./dist/store-convex/server.js"
+    },
+    "./store-convex/convex.config": "./dist/store-convex/component/convex.config.ts",
     "./package.json": "./package.json"
   },
   "files": [
@@ -116,9 +125,13 @@
     }
   },
   "peerDependencies": {
+    "convex": ">=1.17",
     "pg": ">=8"
   },
   "peerDependenciesMeta": {
+    "convex": {
+      "optional": true
+    },
     "pg": {
       "optional": true
     }

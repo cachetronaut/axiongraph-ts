@@ -6,6 +6,7 @@
   "include": [
     "packages/core/src/**/*.ts",
     "packages/store-local/src/**/*.ts",
-    "packages/store-postgres/src/**/*.ts"
+    "packages/store-postgres/src/**/*.ts",
+    "packages/store-convex/src/**/*.ts"
   ]
 }

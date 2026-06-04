@@ -61,9 +61,10 @@ you install only what a feature needs.
 | `axiongraph` | Event model, deterministic reducer, canonicalizer, vocabulary machinery, and the `GraphStore` port. | — |
 | `axiongraph/store-local` | Zero-service reference adapters: an in-memory store and a `node:sqlite`-backed durable store. | — (`node:sqlite` is built in) |
 | `axiongraph/store-postgres` | Durable `PostgresStore` backed by a `pg` pool: `jsonb` event log keyed on `(runId, seq)`, idempotent appends, live-fold snapshots. | `pg` |
+| `axiongraph/store-convex` | `ConvexStore` for a [Convex](https://convex.dev) deployment, shipped as a Convex Component. Includes a minimal reactive `subscribe()` over `client.onUpdate` — the port's optional realtime tail. | `convex` |
 
-Planned subpaths: `axiongraph/store-convex` (peer: `convex`), `axiongraph/store-neo4j`
-(peer: `neo4j-driver`). A Python mirror ships the same adapters as PyPI extras.
+Planned subpaths: `axiongraph/store-neo4j` (peer: `neo4j-driver`). A Python mirror ships the
+same adapters as PyPI extras.
 
 ## Install
 
@@ -86,6 +87,42 @@ const state = await store.snapshot("run_01");
 Both `InMemoryStore` and `SqliteStore` satisfy the same `GraphStore` contract, so they are
 interchangeable; any future adapter that passes the shared contract suite drops in the same way.
 
+### Convex
+
+The Convex adapter ships as a [Convex Component](https://docs.convex.dev/components). Install it
+in your `convex/convex.config.ts`, then expose its functions with the provided host factory:
+
+```ts
+// convex/convex.config.ts
+import { defineApp } from "convex/server";
+import axiongraph from "axiongraph/store-convex/convex.config";
+
+const app = defineApp();
+app.use(axiongraph);
+export default app;
+
+// convex/axiongraph.ts
+import { components } from "./_generated/api";
+import { exposeAxiongraph } from "axiongraph/store-convex/server";
+
+export const { append, readEvents } = exposeAxiongraph(components.axiongraph);
+```
+
+An external client then drives it like any other `GraphStore`:
+
+```ts
+import { ConvexClient } from "convex/browser";
+import { ConvexStore } from "axiongraph/store-convex";
+
+const store = new ConvexStore(new ConvexClient(process.env.CONVEX_URL!));
+await store.append(events);
+for await (const event of store.subscribe!("run_01")) {
+  // reactive tail — re-fires as the run's log grows
+}
+```
+
+Convex Components are a beta feature; the component is bundled by your own `convex dev`/deploy.
+
 ## Development
 
 Node 24 and pnpm 9. The repo is a pnpm workspace.
@@ -97,11 +134,13 @@ pnpm build    # bundle the internal packages into the single axiongraph dist
 ```
 
 The repo is an internal pnpm workspace (`packages/core`, `packages/store-local`,
-`packages/store-postgres`, plus a dev-only `packages/testkit` shared contract suite); `tsup`
-bundles the publishable ones into the single `axiongraph` dist with subpath exports.
+`packages/store-postgres`, `packages/store-convex`, plus a dev-only `packages/testkit` shared
+contract suite); `tsup` bundles the publishable ones into the single `axiongraph` dist with
+subpath exports, and copies the Convex component source in unbundled (Convex compiles it).
 
 The Postgres contract suite is gated on `AXIONGRAPH_TEST_POSTGRES_URL`; it is skipped locally
-unless set, and CI runs it against a `postgres:16` service.
+unless set, and CI runs it against a `postgres:16` service. The Convex adapter runs its store
+contract offline via `convex-test`; a live smoke test is gated on `CONVEX_URL`.
 
 ## Status
 
