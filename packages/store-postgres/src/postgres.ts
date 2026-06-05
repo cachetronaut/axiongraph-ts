@@ -6,7 +6,7 @@ import {
   type ScanOptions,
   type StoreDriver,
   type Transaction,
-} from '../../../../store-driver-kit-ts/packages/core/src/index';
+} from '../../../../dockbay-ts/packages/core/src/index';
 
 /** Plain or schema-unqualified SQL identifier; interpolated into DDL, so it must be validated. */
 const IDENTIFIER = /^[A-Za-z_][A-Za-z0-9_]*$/;
