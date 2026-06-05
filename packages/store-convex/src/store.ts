@@ -10,7 +10,7 @@ import type {
   ScanOptions,
   StoreDriver,
   Transaction,
-} from '../../../../dockbay-ts/packages/core/src/index';
+} from '../../../../../dockbay/dockbay-ts/packages/core/src/index';
 
 /**
  * The one-shot surface this adapter needs: run a mutation or query by reference. Declared
