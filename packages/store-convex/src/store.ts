@@ -5,6 +5,12 @@ import {
   type FunctionReturnType,
   makeFunctionReference,
 } from 'convex/server';
+import type {
+  Row,
+  ScanOptions,
+  StoreDriver,
+  Transaction,
+} from '../../../../store-driver-kit-ts/packages/core/src/index';
 
 /**
  * The one-shot surface this adapter needs: run a mutation or query by reference. Declared
@@ -59,14 +65,8 @@ export interface ConvexStoreOptions {
  * `AsyncIterable`, available only when constructed with a reactive client.
  */
 export class ConvexStore implements GraphStore {
-  private readonly client: ConvexClientLike;
+  private readonly driver: ConvexGraphDriver;
   private readonly reactive?: ConvexReactiveClientLike;
-  private readonly appendRef: FunctionReference<
-    'mutation',
-    'public',
-    { events: GraphEvent[] },
-    null
-  >;
   private readonly readEventsRef: FunctionReference<
     'query',
     'public',
@@ -75,12 +75,11 @@ export class ConvexStore implements GraphStore {
   >;
 
   constructor(client: ConvexClientLike, options: ConvexStoreOptions = {}) {
-    this.client = client;
     this.reactive =
       options.reactive ??
       ('onUpdate' in client ? (client as unknown as ConvexReactiveClientLike) : undefined);
     const prefix = options.prefix ?? 'axiongraph';
-    this.appendRef = makeFunctionReference<'mutation', { events: GraphEvent[] }, null>(
+    const appendRef = makeFunctionReference<'mutation', { events: GraphEvent[] }, null>(
       `${prefix}:append`,
     );
     this.readEventsRef = makeFunctionReference<
@@ -88,24 +87,39 @@ export class ConvexStore implements GraphStore {
       { runId: string; sinceSeq?: number },
       GraphEvent[]
     >(`${prefix}:readEvents`);
+    this.driver = new ConvexGraphDriver(client, appendRef, this.readEventsRef);
   }
 
   async append(events: readonly GraphEvent[]): Promise<void> {
     if (events.length === 0) {
       return;
     }
-    await this.client.mutation(this.appendRef, { events: events as GraphEvent[] });
+    await this.driver.transaction(async (txn) => {
+      for (const event of events) {
+        await txn.upsert('events', eventKey(event), { payload: event });
+      }
+    });
   }
 
   async *readEvents(runId: string, sinceSeq?: number): AsyncIterable<GraphEvent> {
-    const events = await this.client.query(this.readEventsRef, { runId, sinceSeq });
-    for (const event of events) {
-      yield event;
-    }
+    yield* await this.driver.transaction(async (txn) => {
+      const events: GraphEvent[] = [];
+      for await (const row of txn.scan(
+        'events',
+        { runId },
+        { after: { runId, seq: sinceSeq ?? 0 } },
+      )) {
+        events.push(row.payload as GraphEvent);
+      }
+      return events;
+    });
   }
 
   async snapshot(runId: string): Promise<GraphState> {
-    const events = await this.client.query(this.readEventsRef, { runId });
+    const events: GraphEvent[] = [];
+    for await (const event of this.readEvents(runId)) {
+      events.push(event);
+    }
     return reduceAll(runId, events);
   }
 
@@ -165,4 +179,90 @@ export class ConvexStore implements GraphStore {
       unsubscribe();
     }
   }
+}
+
+class ConvexGraphDriver implements StoreDriver {
+  readonly backend = 'convex';
+
+  constructor(
+    private readonly client: ConvexClientLike,
+    private readonly appendRef: FunctionReference<
+      'mutation',
+      'public',
+      { events: GraphEvent[] },
+      null
+    >,
+    private readonly readEventsRef: FunctionReference<
+      'query',
+      'public',
+      { runId: string; sinceSeq?: number },
+      GraphEvent[]
+    >,
+  ) {}
+
+  async transaction<T>(work: (txn: Transaction) => Promise<T>): Promise<T> {
+    return work(new ConvexGraphTransaction(this.client, this.appendRef, this.readEventsRef));
+  }
+
+  async close(): Promise<void> {}
+}
+
+class ConvexGraphTransaction implements Transaction {
+  constructor(
+    private readonly client: ConvexClientLike,
+    private readonly appendRef: FunctionReference<
+      'mutation',
+      'public',
+      { events: GraphEvent[] },
+      null
+    >,
+    private readonly readEventsRef: FunctionReference<
+      'query',
+      'public',
+      { runId: string; sinceSeq?: number },
+      GraphEvent[]
+    >,
+  ) {}
+
+  async upsert(table: string, _key: Row, row: Row): Promise<void> {
+    this.assertEventTable(table);
+    await this.client.mutation(this.appendRef, { events: [row.payload as GraphEvent] });
+  }
+
+  async get(table: string, key: Row): Promise<Row | undefined> {
+    this.assertEventTable(table);
+    const events = await this.client.query(this.readEventsRef, {
+      runId: key.runId as string,
+      sinceSeq: ((key.seq as number) ?? 1) - 1,
+    });
+    const event = events.find((candidate) => candidate.seq === key.seq);
+    return event === undefined ? undefined : { payload: event };
+  }
+
+  async *scan(table: string, prefix: Row, opts: ScanOptions = {}): AsyncIterable<Row> {
+    this.assertEventTable(table);
+    const afterSeq = typeof opts.after?.seq === 'number' ? opts.after.seq : undefined;
+    const events = await this.client.query(this.readEventsRef, {
+      runId: prefix.runId as string,
+      sinceSeq: afterSeq,
+    });
+    const limited = opts.limit === undefined ? events : events.slice(0, opts.limit);
+    for (const event of limited) {
+      yield { payload: event };
+    }
+  }
+
+  async compareAndApply(): Promise<boolean> {
+    throw new Error('ConvexGraphTransaction.compareAndApply is not supported by GraphStore');
+  }
+
+  private assertEventTable(table: string): void {
+    if (table !== 'events') {
+      throw new Error(`Unknown Convex graph table: ${table}`);
+    }
+  }
+}
+
+function eventKey(event: GraphEvent): Row {
+  return { runId: event.runId, seq: event.seq };
 }
